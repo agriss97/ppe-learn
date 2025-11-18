@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>E-LEARN Certificate of Completion</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ececec;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .certificate-container {
+    width: 100%;
+    max-width: 900px;
+    padding: 35px;
+  }
+
+  .certificate {
+    background: #fff;
+    padding: 40px 50px;
+    border-radius: 10px;
+    border: 10px solid #d4af37;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    position: relative;
+  }
+
+  .certificate h1 {
+    font-family: "Playfair Display", serif;
+    font-size: 3rem;
+    margin: 0;
+    color: #d4af37;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .certificate h3 {
+    font-family: "Inter", sans-serif;
+    margin-top: 5px;
+    color: #555;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .certificate p {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  .username {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #000;
+    font-family: "Playfair Display", serif;
+  }
+
+  .course {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #28b485;
+    font-family: "Playfair Display", serif;
+  }
+
+  #scoreBox {
+    font-size: 1.1rem;
+    color: #444;
+    margin-top: 10px;
+  }
+
+  .bottom-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+    font-size: 1rem;
+  }
+
+  .sign-block {
+    text-align: center;
+    width: 40%;
+  }
+
+  .sign-line {
+    width: 80%;
+    height: 2px;
+    background: #222;
+    margin: 0 auto 5px auto;
+  }
+
+  .download-btn {
+    margin-top: 30px;
+    padding: 12px 22px;
+    background: #28b485;
+    color: white;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: block;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .download-btn:hover {
+    background: #1e8f66;
+  }
+</style>
+</head>
+<body>
+
+<div class="certificate-container">
+  <div class="certificate" id="certificate">
+    
+    <h1>E-LEARN</h1>
+    <h3>Certificate of Completion</h3>
+
+    <p>This certificate is proudly awarded to</p>
+
+    <p class="username" id="username">[Student Name]</p>
+
+    <p>for successfully completing the course</p>
+
+    <p class="course" id="courseName">[Course Name]</p>
+
+    <p id="scoreBox"></p>
+
+    <p style="margin-top:30px; font-size:1rem; color:#555;" id="date"></p>
+
+    <div class="bottom-row">
+      <div class="sign-block">
+        <div class="sign-line"></div>
+        <span>Instructor</span>
+      </div>
+
+      <div class="sign-block">
+        <div class="sign-line"></div>
+        <span>E-LEARN Director</span>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="download-btn" onclick="generatePDF()">⬇ Download PDF</button>
+</div>
+
+<!-- Libraries for PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+// Read params
+const params = new URLSearchParams(window.location.search);
+const course = params.get("course") || "Unknown Course";
+const score = params.get("score");
+const user = localStorage.getItem("loggedInUser") || "Student";
+
+// Course map
+const courseNames = {
+  python: "Python Programming",
+  webdev: "Web Development",
+  cloud: "Cloud Computing",
+  devops: "DevOps Engineering",
+  aiml: "AI - Machine Learning",
+};
+
+document.getElementById("username").innerText = user;
+document.getElementById("courseName").innerText = courseNames[course] || course;
+
+if(score){
+  document.getElementById("scoreBox").innerText = "Score Achieved: " + score + "%";
+}
+
+document.getElementById("date").innerText = "Awarded on " + new Date().toLocaleDateString();
+
+// High-quality PDF export
+async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const cert = document.getElementById("certificate");
+
+  const canvas = await html2canvas(cert, { scale: 3 });
+  const imgData = canvas.toDataURL("image/png");
+
+  const pdf = new jsPDF("landscape", "pt", "a4");
+  const width = pdf.internal.pageSize.getWidth();
+  const height = pdf.internal.pageSize.getHeight();
+
+  pdf.addImage(imgData, "PNG", 0, 0, width, height);
+  pdf.save(`E-LEARN_Certificate_${user}.pdf`);
+}
+</script>
+
+</body>
+</html>

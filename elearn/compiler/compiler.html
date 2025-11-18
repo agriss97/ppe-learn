@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Compiler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #7e22ce 50%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #e9d5ff;
+            margin-bottom: 30px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .panel {
+            background: #1e293b;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .panel-header {
+            padding: 12px 16px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .purple { background: #9333ea; }
+        .green { background: #16a34a; }
+        .blue { background: #2563eb; }
+        .orange { background: #ea580c; }
+        
+        textarea {
+            width: 100%;
+            height: 400px;
+            background: #0f172a;
+            color: #4ade80;
+            border: none;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+        }
+        textarea:focus {
+            outline: none;
+        }
+        .output-area {
+            background: #0f172a;
+            color: #4ade80;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            height: 400px;
+            overflow-y: auto;
+        }
+        .tokens-area, .ast-area {
+            background: #0f172a;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .tokens-area { color: #93c5fd; }
+        .ast-area { color: #fdba74; }
+        
+        button {
+            background: white;
+            color: #9333ea;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #f3e8ff;
+        }
+        .error {
+            color: #f87171;
+        }
+        .placeholder {
+            color: #6b7280;
+        }
+        .token-line {
+            margin-bottom: 4px;
+        }
+        .token-type {
+            color: #fbbf24;
+        }
+        .features {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+        }
+        .features h3 {
+            margin-bottom: 12px;
+        }
+        .features ul {
+            list-style: none;
+            color: #e9d5ff;
+        }
+        .features li {
+            margin-bottom: 6px;
+        }
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐍 Python Compiler</h1>
+        <p class="subtitle">Lexer → Parser → Interpreter</p>
+        
+        <div class="grid">
+            <div class="panel">
+                <div class="panel-header purple">
+                    <span>Source Code</span>
+                    <button onclick="compile()">▶ Compile & Run</button>
+                </div>
+                <textarea id="code"># Python Compiler Demo
+x = 10
+y = 20
+result = x + y
+print("Sum:", result)
+
+if result > 25:
+    print("Result is greater than 25")
+else:
+    print("Result is 25 or less")
+
+for i in range(3):
+    print("Loop iteration:", i)</textarea>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header green">
+                    <span>📟 Output</span>
+                </div>
+                <div class="output-area" id="output">
+                    <div class="placeholder">Click "Compile & Run" to see output...</div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header blue">
+                    <span>Tokens (Lexer Output)</span>
+                </div>
+                <div class="tokens-area" id="tokens">
+                    <div class="placeholder">No tokens yet...</div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header orange">
+                    <span>AST (Parser Output)</span>
+                </div>
+                <div class="ast-area" id="ast">
+                    <div class="placeholder">No AST yet...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h3>Supported Features:</h3>
+            <ul>
+                <li>✓ Variables and assignments (x = 10)</li>
+                <li>✓ Arithmetic operations (+, -, *, /)</li>
+                <li>✓ Comparison operators (&gt;, &lt;, ==, !=, &gt;=, &lt;=)</li>
+                <li>✓ Print statements</li>
+                <li>✓ If-else conditionals</li>
+                <li>✓ For loops with range()</li>
+                <li>✓ String and number literals</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function tokenize(source) {
+            const tokens = [];
+            const lines = source.split('\n');
+            
+            const tokenPatterns = [
+                { type: 'KEYWORD', pattern: /^(if|else|elif|for|while|def|return|print|range|in)(?![a-zA-Z_])/ },
+                { type: 'NUMBER', pattern: /^[0-9]+(\.[0-9]+)?/ },
+                { type: 'STRING', pattern: /^"([^"]*)"/ },
+                { type: 'IDENTIFIER', pattern: /^[a-zA-Z_][a-zA-Z0-9_]*/ },
+                { type: 'OPERATOR', pattern: /^(\+|\-|\*|\/|==|!=|<=|>=|<|>|=)/ },
+                { type: 'LPAREN', pattern: /^\(/ },
+                { type: 'RPAREN', pattern: /^\)/ },
+                { type: 'COLON', pattern: /^:/ },
+                { type: 'COMMA', pattern: /^,/ },
+                { type: 'WHITESPACE', pattern: /^[ \t]+/ },
+            ];
+
+            lines.forEach((line, lineNum) => {
+                if (line.trim().startsWith('#')) return;
+                
+                let pos = 0;
+                const indent = line.match(/^[ \t]*/)[0].length;
+                
+                if (line.trim()) {
+                    tokens.push({ type: 'INDENT', value: indent, line: lineNum });
+                }
+                
+                while (pos < line.length) {
+                    let matched = false;
+                    
+                    for (const { type, pattern } of tokenPatterns) {
+                        const match = line.slice(pos).match(pattern);
+                        if (match) {
+                            if (type !== 'WHITESPACE') {
+                                tokens.push({ type, value: match[0], line: lineNum });
+                            }
+                            pos += match[0].length;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!matched) pos++;
+                }
+                
+                tokens.push({ type: 'NEWLINE', value: '\\n', line: lineNum });
+            });
+            
+            return tokens;
+        }
+
+        function parse(tokens) {
+            let pos = 0;
+            
+            const peek = () => tokens[pos];
+            const advance = () => tokens[pos++];
+            const expect = (type) => {
+                const token = advance();
+                if (token?.type !== type) {
+                    throw new Error(`Expected ${type}, got ${token?.type}`);
+                }
+                return token;
+            };
+
+            const skipNewlines = () => {
+                while (peek()?.type === 'NEWLINE') advance();
+            };
+
+            const parseExpression = () => {
+                let left = parsePrimary();
+                
+                while (peek()?.type === 'OPERATOR' && peek().value !== '=') {
+                    const op = advance();
+                    const right = parsePrimary();
+                    left = { type: 'BinaryOp', op: op.value, left, right };
+                }
+                
+                return left;
+            };
+
+            const parsePrimary = () => {
+                const token = peek();
+                
+                if (token.type === 'NUMBER') {
+                    advance();
+                    return { type: 'Number', value: parseFloat(token.value) };
+                }
+                
+                if (token.type === 'STRING') {
+                    advance();
+                    return { type: 'String', value: token.value.slice(1, -1) };
+                }
+                
+                if (token.type === 'IDENTIFIER') {
+                    advance();
+                    if (peek()?.type === 'LPAREN') {
+                        return parseCall(token.value);
+                    }
+                    return { type: 'Identifier', name: token.value };
+                }
+                
+                if (token.type === 'LPAREN') {
+                    advance();
+                    const expr = parseExpression();
+                    expect('RPAREN');
+                    return expr;
+                }
+                
+                throw new Error(`Unexpected token: ${token.type}`);
+            };
+
+            const parseCall = (name) => {
+                expect('LPAREN');
+                const args = [];
+                
+                if (peek()?.type !== 'RPAREN') {
+                    args.push(parseExpression());
+                    while (peek()?.type === 'COMMA') {
+                        advance();
+                        args.push(parseExpression());
+                    }
+                }
+                
+                expect('RPAREN');
+                return { type: 'Call', name, args };
+            };
+
+            const parseStatement = (baseIndent) => {
+                skipNewlines();
+                const token = peek();
+                
+                if (!token || token.type === 'INDENT' && token.value < baseIndent) {
+                    return null;
+                }
+                
+                if (token.type === 'INDENT') advance();
+                
+                const current = peek();
+                
+                if (current.type === 'KEYWORD') {
+                    if (current.value === 'print') {
+                        advance();
+                        const call = parseCall('print');
+                        skipNewlines();
+                        return call;
+                    }
+                    
+                    if (current.value === 'if') {
+                        advance();
+                        const condition = parseExpression();
+                        expect('COLON');
+                        expect('NEWLINE');
+                        
+                        const thenIndent = peek()?.value || baseIndent + 4;
+                        const thenBody = parseBlock(thenIndent);
+                        
+                        let elseBody = null;
+                        if (peek()?.type === 'KEYWORD' && peek().value === 'else') {
+                            advance();
+                            advance();
+                            expect('COLON');
+                            expect('NEWLINE');
+                            const elseIndent = peek()?.value || baseIndent + 4;
+                            elseBody = parseBlock(elseIndent);
+                        }
+                        
+                        return { type: 'If', condition, thenBody, elseBody };
+                    }
+                    
+                    if (current.value === 'for') {
+                        advance();
+                        const varToken = expect('IDENTIFIER');
+                        expect('KEYWORD');
+                        const iterable = parseExpression();
+                        expect('COLON');
+                        expect('NEWLINE');
+                        
+                        const bodyIndent = peek()?.value || baseIndent + 4;
+                        const body = parseBlock(bodyIndent);
+                        
+                        return { type: 'For', variable: varToken.value, iterable, body };
+                    }
+                }
+                
+                if (current.type === 'IDENTIFIER') {
+                    const name = advance();
+                    if (peek()?.type === 'OPERATOR' && peek().value === '=') {
+                        advance();
+                        const value = parseExpression();
+                        skipNewlines();
+                        return { type: 'Assignment', name: name.value, value };
+                    }
+                }
+                
+                throw new Error(`Unexpected statement: ${current.type}`);
+            };
+
+            const parseBlock = (indent) => {
+                const statements = [];
+                
+                while (peek() && peek().type === 'INDENT' && peek().value >= indent) {
+                    const stmt = parseStatement(indent);
+                    if (stmt) statements.push(stmt);
+                    else break;
+                }
+                
+                return statements;
+            };
+
+            const parseProgram = () => {
+                const statements = [];
+                skipNewlines();
+                
+                while (pos < tokens.length) {
+                    const stmt = parseStatement(0);
+                    if (stmt) statements.push(stmt);
+                    else break;
+                }
+                
+                return { type: 'Program', body: statements };
+            };
+
+            return parseProgram();
+        }
+
+        function interpret(ast) {
+            const output = [];
+            const variables = {};
+            
+            const evaluate = (node) => {
+                switch (node.type) {
+                    case 'Number':
+                        return node.value;
+                    
+                    case 'String':
+                        return node.value;
+                    
+                    case 'Identifier':
+                        if (!(node.name in variables)) {
+                            throw new Error(`Undefined variable: ${node.name}`);
+                        }
+                        return variables[node.name];
+                    
+                    case 'BinaryOp':
+                        const left = evaluate(node.left);
+                        const right = evaluate(node.right);
+                        switch (node.op) {
+                            case '+': return left + right;
+                            case '-': return left - right;
+                            case '*': return left * right;
+                            case '/': return left / right;
+                            case '>': return left > right;
+                            case '<': return left < right;
+                            case '>=': return left >= right;
+                            case '<=': return left <= right;
+                            case '==': return left == right;
+                            case '!=': return left != right;
+                            default: throw new Error(`Unknown operator: ${node.op}`);
+                        }
+                    
+                    case 'Call':
+                        if (node.name === 'print') {
+                            const args = node.args.map(evaluate);
+                            output.push(args.join(' '));
+                            return null;
+                        }
+                        if (node.name === 'range') {
+                            const end = evaluate(node.args[0]);
+                            return Array.from({ length: end }, (_, i) => i);
+                        }
+                        throw new Error(`Unknown function: ${node.name}`);
+                    
+                    case 'Assignment':
+                        variables[node.name] = evaluate(node.value);
+                        return null;
+                    
+                    case 'If':
+                        if (evaluate(node.condition)) {
+                            node.thenBody.forEach(execute);
+                        } else if (node.elseBody) {
+                            node.elseBody.forEach(execute);
+                        }
+                        return null;
+                    
+                    case 'For':
+                        const iterable = evaluate(node.iterable);
+                        for (const item of iterable) {
+                            variables[node.variable] = item;
+                            node.body.forEach(execute);
+                        }
+                        return null;
+                    
+                    default:
+                        throw new Error(`Unknown node type: ${node.type}`);
+                }
+            };
+
+            const execute = (node) => {
+                evaluate(node);
+            };
+
+            ast.body.forEach(execute);
+            return output;
+        }
+
+        function compile() {
+            try {
+                const code = document.getElementById('code').value;
+                
+                // Tokenize
+                const tokens = tokenize(code);
+                const tokensDiv = document.getElementById('tokens');
+                tokensDiv.innerHTML = tokens
+                    .filter(t => t.type !== 'NEWLINE')
+                    .map(t => `<div class="token-line"><span class="token-type">${t.type}</span>: ${t.value}</div>`)
+                    .join('');
+                
+                // Parse
+                const ast = parse(tokens);
+                const astDiv = document.getElementById('ast');
+                astDiv.innerHTML = `<pre>${JSON.stringify(ast, null, 2)}</pre>`;
+                
+                // Interpret
+                const output = interpret(ast);
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = output.map(line => `<div>${line}</div>`).join('');
+                
+            } catch (error) {
+                const outputDiv = document.getElementById('output');
+                outputDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

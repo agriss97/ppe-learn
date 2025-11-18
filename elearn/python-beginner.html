@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Python — Beginner Course</title>
+
+<style>
+  :root{
+    --green:#28b485;
+    --green-dark:#1e8f66;
+    --accent:#1565c0;
+    --muted:#6b7280;
+    --bg:#f5f7fa;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    background:var(--bg);
+    color:#111;
+  }
+  header{
+    background:linear-gradient(90deg,var(--green),#2dbd98);
+    color:#fff;
+    padding:16px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  header h1{margin:0;font-size:22px}
+  nav a{
+    color:#fff;
+    font-weight:600;
+    margin-left:12px;
+    text-decoration:none;
+  }
+  nav a:hover{text-decoration:underline}
+
+  .container{max-width:1100px;margin:28px auto;padding:0 18px}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:22px}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}}
+
+  .card{
+    background:var(--card);
+    padding:18px;
+    border-radius:12px;
+    box-shadow:0 6px 18px rgba(16,24,40,0.06);
+    transition:transform .18s ease;
+  }
+  .card:hover{transform:translateY(-4px)}
+
+  h2{
+    margin-top:0;
+    font-size:20px;
+    color:var(--accent);
+    padding-left:10px;
+    border-left:5px solid var(--green);
+  }
+
+  iframe{width:100%;height:360px;border-radius:8px;border:0}
+  @media(max-width:560px){iframe{height:220px}}
+
+  /* Quiz styles */
+  .question{
+    margin-bottom:14px;
+    padding:12px;
+    border-radius:8px;
+    background:#ffffff;
+    border:1px solid #eef2f7;
+  }
+  .question p{
+    margin:0 0 8px 0;
+    font-weight:600;
+  }
+  label{
+    display:block;
+    padding:5px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  input[type=radio]{margin-right:8px}
+
+  .btn{
+    background:var(--green);
+    color:#fff;
+    padding:10px 16px;
+    border-radius:8px;
+    border:0;
+    cursor:pointer;
+    font-weight:700;
+    margin-top:14px;
+  }
+  .btn:hover{background:var(--green-dark)}
+
+  /* Sidebar */
+  .stat{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .stat b{
+    font-size:22px;
+  }
+  .pill{
+    padding:5px 10px;
+    border-radius:999px;
+    background:rgba(40,180,133,0.12);
+    color:var(--green-dark);
+    font-weight:700;
+    font-size:13px;
+  }
+
+  .progress{
+    height:10px;
+    background:#e8edef;
+    border-radius:999px;
+    overflow:hidden;
+    margin-top:12px;
+  }
+  .progress > i{
+    display:block;
+    height:100%;
+    background:linear-gradient(90deg,var(--green),#2dbd98);
+    width:0%;
+    transition:width .6s ease;
+  }
+
+  .meta{font-size:13px;color:var(--muted)}
+  footer{
+    max-width:1100px;margin:28px auto 40px;padding:0 18px;
+    color:var(--muted);font-size:13px;
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>E-Learn — Python Beginner</h1>
+  <nav>
+    <a href="python-index.html">Home</a>
+    <a href="python-intermediate.html">Intermediate</a>
+    <a href="python-advanced.html">Advanced</a>
+    <a href="login.html" class="auth-link">Login</a>
+    <a href="compiler/compiler.html" class="auth-link">Practice</a>
+  </nav>
+</header>
+
+<main class="container">
+
+<div class="grid">
+
+  <!-- LEFT CONTENT -->
+  <div>
+
+    <div class="card">
+      <h2>Welcome to Python (Beginner Level)</h2>
+      <p class="meta">This module introduces Python basics including syntax, variables, data types, operators, loops, and functions.</p>
+
+      <h3>Video Tutorial</h3>
+      <div class="video-container">
+        <iframe src="https://www.youtube.com/embed/_uQrJ0TkZlc" title="Python Tutorial for Beginners"></iframe>
+      </div>
+    </div>
+
+    <!-- QUIZ CARD -->
+    <div class="card" style="margin-top:22px">
+      <h2>Beginner Quiz (25 Questions)</h2>
+
+      <form id="quizForm">
+
+<!-- QUESTIONS 1–25 (FULL SET) -->
+<div class="question"><p>1. Python is a ______ language?</p>
+<label><input type="radio" name="q1" value="A"> Low-level</label>
+<label><input type="radio" name="q1" value="B"> High-level</label>
+<label><input type="radio" name="q1" value="C"> Assembly</label>
+</div>
+
+<div class="question"><p>2. Which keyword is used to define a function in Python?</p>
+<label><input type="radio" name="q2" value="A"> func</label>
+<label><input type="radio" name="q2" value="B"> def</label>
+<label><input type="radio" name="q2" value="C"> function</label>
+</div>
+
+<div class="question"><p>3. Which of the following is a valid variable name?</p>
+<label><input type="radio" name="q3" value="A"> 1name</label>
+<label><input type="radio" name="q3" value="B"> name1</label>
+<label><input type="radio" name="q3" value="C"> for</label>
+</div>
+
+<div class="question"><p>4. What symbol is used for comments in Python?</p>
+<label><input type="radio" name="q4" value="A"> //</label>
+<label><input type="radio" name="q4" value="B"> #</label>
+<label><input type="radio" name="q4" value="C"> --</label>
+</div>
+
+<div class="question"><p>5. Which data type stores True/False?</p>
+<label><input type="radio" name="q5" value="A"> int</label>
+<label><input type="radio" name="q5" value="B"> bool</label>
+<label><input type="radio" name="q5" value="C"> str</label>
+</div>
+
+<div class="question"><p>6. Which operator is for exponent?</p>
+<label><input type="radio" name="q6" value="A"> ^</label>
+<label><input type="radio" name="q6" value="B"> **</label>
+<label><input type="radio" name="q6" value="C"> ^^</label>
+</div>
+
+<div class="question"><p>7. Which adds an item to a list?</p>
+<label><input type="radio" name="q7" value="A"> push()</label>
+<label><input type="radio" name="q7" value="B"> append()</label>
+<label><input type="radio" name="q7" value="C"> add()</label>
+</div>
+
+<div class="question"><p>8. Which is immutable?</p>
+<label><input type="radio" name="q8" value="A"> list</label>
+<label><input type="radio" name="q8" value="B"> tuple</label>
+<label><input type="radio" name="q8" value="C"> dictionary</label>
+</div>
+
+<div class="question"><p>9. What does len() return?</p>
+<label><input type="radio" name="q9" value="A"> Type</label>
+<label><input type="radio" name="q9" value="B"> Number of items</label>
+<label><input type="radio" name="q9" value="C"> Memory size</label>
+</div>
+
+<div class="question"><p>10. Loop keyword?</p>
+<label><input type="radio" name="q10" value="A"> repeat</label>
+<label><input type="radio" name="q10" value="B"> for</label>
+<label><input type="radio" name="q10" value="C"> iterate</label>
+</div>
+
+<div class="question"><p>11. Convert string to integer?</p>
+<label><input type="radio" name="q11" value="A"> int()</label>
+<label><input type="radio" name="q11" value="B"> str()</label>
+<label><input type="radio" name="q11" value="C"> chr()</label>
+</div>
+
+<div class="question"><p>12. Exception handling keyword?</p>
+<label><input type="radio" name="q12" value="A"> catch</label>
+<label><input type="radio" name="q12" value="B"> try</label>
+<label><input type="radio" name="q12" value="C"> error</label>
+</div>
+
+<div class="question"><p>13. Logical operator?</p>
+<label><input type="radio" name="q13" value="A"> ++</label>
+<label><input type="radio" name="q13" value="B"> :=</label>
+<label><input type="radio" name="q13" value="C"> and</label>
+</div>
+
+<div class="question"><p>14. Display output?</p>
+<label><input type="radio" name="q14" value="A"> print()</label>
+<label><input type="radio" name="q14" value="B"> output()</label>
+<label><input type="radio" name="q14" value="C"> show()</label>
+</div>
+
+<div class="question"><p>15. Python file extension?</p>
+<label><input type="radio" name="q15" value="A"> .py</label>
+<label><input type="radio" name="q15" value="B"> .pt</label>
+<label><input type="radio" name="q15" value="C"> .pyt</label>
+</div>
+
+<div class="question"><p>16. Create a class?</p>
+<label><input type="radio" name="q16" value="A"> module</label>
+<label><input type="radio" name="q16" value="B"> class</label>
+<label><input type="radio" name="q16" value="C"> object</label>
+</div>
+
+<div class="question"><p>17. Start a list?</p>
+<label><input type="radio" name="q17" value="A"> []</label>
+<label><input type="radio" name="q17" value="B"> {}</label>
+<label><input type="radio" name="q17" value="C"> ()</label>
+</div>
+
+<div class="question"><p>18. Equality operator?</p>
+<label><input type="radio" name="q18" value="A"> =</label>
+<label><input type="radio" name="q18" value="B"> ==</label>
+<label><input type="radio" name="q18" value="C"> !=</label>
+</div>
+
+<div class="question"><p>19. Get object type?</p>
+<label><input type="radio" name="q19" value="A"> kind()</label>
+<label><input type="radio" name="q19" value="B"> type()</label>
+<label><input type="radio" name="q19" value="C"> class()</label>
+</div>
+
+<div class="question"><p>20. Dictionaries store ______ pairs.</p>
+<label><input type="radio" name="q20" value="A"> value:value</label>
+<label><input type="radio" name="q20" value="B"> key:value</label>
+<label><input type="radio" name="q20" value="C"> key:key</label>
+</div>
+
+<div class="question"><p>21. Which loop repeats until condition false?</p>
+<label><input type="radio" name="q21" value="A"> for</label>
+<label><input type="radio" name="q21" value="B"> while</label>
+<label><input type="radio" name="q21" value="C"> repeat</label>
+</div>
+
+<div class="question"><p>22. Max value function?</p>
+<label><input type="radio" name="q22" value="A"> max()</label>
+<label><input type="radio" name="q22" value="B"> top()</label>
+<label><input type="radio" name="q22" value="C"> high()</label>
+</div>
+
+<div class="question"><p>23. break statement?</p>
+<label><input type="radio" name="q23" value="A"> restarts loop</label>
+<label><input type="radio" name="q23" value="B"> exits loop</label>
+<label><input type="radio" name="q23" value="C"> pauses loop</label>
+</div>
+
+<div class="question"><p>24. Remove last item in list?</p>
+<label><input type="radio" name="q24" value="A"> delete()</label>
+<label><input type="radio" name="q24" value="B"> pop()</label>
+<label><input type="radio" name="q24" value="C"> remove()</label>
+</div>
+
+<div class="question"><p>25. continue statement?</p>
+<label><input type="radio" name="q25" value="A"> stops loop</label>
+<label><input type="radio" name="q25" value="B"> skips to next iteration</label>
+<label><input type="radio" name="q25" value="C"> ends program</label>
+</div>
+
+<button type="button" class="btn" onclick="submitQuiz()">Submit Quiz</button>
+      </form>
+
+      <div class="progress"><i id="progressBar"></i></div>
+      <p class="meta">Score 70% or higher to unlock your certificate.</p>
+
+    </div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside>
+    <div class="card">
+      <h3>Course Status</h3>
+      <div class="stat">
+        <b id="statusPercent">0%</b>
+        <span class="meta">completed</span>
+      </div>
+      <div class="progress"><i id="sidebarProgress"></i></div>
+
+      <hr style="margin:18px 0;border:none;border-top:1px solid #eee">
+
+      <h4>Level</h4>
+      <span class="pill">Beginner</span>
+
+      <h4 style="margin-top:16px">You will learn:</h4>
+      <ul>
+        <li>Syntax & basics</li>
+        <li>Variables & types</li>
+        <li>Loops & conditions</li>
+        <li>Functions</li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
+
+</main>
+
+<footer>© E-Learn • Python Beginner</footer>
+
+<script>
+function submitQuiz() {
+  let score = 0;
+  const total = 25;
+
+  const answers = {
+    q1:"B",q2:"B",q3:"B",q4:"B",q5:"B",
+    q6:"B",q7:"B",q8:"B",q9:"B",q10:"B",
+    q11:"A",q12:"B",q13:"C",q14:"A",q15:"A",
+    q16:"B",q17:"A",q18:"B",q19:"B",q20:"B",
+    q21:"B",q22:"A",q23:"B",q24:"B",q25:"B"
+  };
+
+  for (let q in answers) {
+    const selected = document.querySelector(`input[name=${q}]:checked`);
+    if (selected && selected.value === answers[q]) score++;
+  }
+
+  const percent = Math.round((score / total) * 100);
+  alert("You scored " + percent + "%");
+
+  // Update bars visually
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("sidebarProgress").style.width = percent + "%";
+  document.getElementById("statusPercent").textContent = percent + "%";
+
+  if (percent >= 70) {
+    const user = localStorage.getItem("loggedInUser");
+    if (user) {
+
+      // save progress
+      localStorage.setItem(`${user}_python_beginner`, percent);
+
+      // add certificate to dashboard
+      let earned = JSON.parse(localStorage.getItem("earnedCerts") || "[]");
+      const certName = "Python - Beginner Certificate";
+      if (!earned.includes(certName)) {
+        earned.push(certName);
+        localStorage.setItem("earnedCerts", JSON.stringify(earned));
+      }
+
+      alert("Beginner Level Completed ✔ Certificate unlocked!");
+
+      // REDIRECT WITH SCORE
+      window.location.href = `certificate.html?course=python&score=${percent}`;
+    }
+    else {
+      alert("Login required to save your certificate.");
+    }
+  }
+}
+</script>
+
+</body>
+</html>

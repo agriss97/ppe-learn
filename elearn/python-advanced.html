@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Python — Advanced • E-Learn</title>
+<style>
+  :root{
+    --green:#28b485; --green-dark:#1e8f66; --accent:#1565c0; --muted:#6b7280;
+    --bg:#f5f7fa; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:var(--bg);color:#111}
+  header{background:linear-gradient(90deg,var(--green),#2dbd98);color:#fff;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+  header h1{margin:0;font-size:20px}
+  nav a{color:#fff;text-decoration:none;margin-left:12px;font-weight:600}
+  nav a:hover{text-decoration:underline}
+  .container{max-width:1100px;margin:28px auto;padding:0 18px}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:22px}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(16,24,40,0.06);transition:transform .15s}
+  .card:hover{transform:translateY(-4px)}
+  h2{font-size:20px;margin-top:0;color:var(--accent);padding-left:10px;border-left:5px solid var(--green)}
+  .video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:12px}
+  iframe{width:100%;height:200px;border-radius:8px;border:0}
+  @media(max-width:560px){iframe{height:220px}}
+  .question{margin-bottom:12px;padding:12px;border-radius:8px;background:#fff;border:1px solid #eef2f7}
+  .question p{margin:0 0 8px 0;font-weight:600}
+  label{display:block;cursor:pointer;padding:6px;border-radius:6px}
+  input[type="radio"]{margin-right:8px}
+  .btn{background:var(--green);color:#fff;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:700}
+  .btn.secondary{background:#fff;color:var(--green);border:1px solid rgba(40,180,133,0.12)}
+  .meta{font-size:13px;color:var(--muted)}
+  .pill{padding:5px 10px;border-radius:999px;background:rgba(40,180,133,0.12);color:var(--green-dark);font-weight:700}
+  .progress{height:10px;background:#e8eef0;border-radius:999px;overflow:hidden;margin-top:12px}
+  .progress > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--green),#2dbd98);transition:width .6s}
+  .locked-overlay{
+    background:rgba(255,255,255,0.92);
+    border:1px solid #f0dede;
+    padding:14px;
+    border-radius:10px;
+    color:#8a1e2b;
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .small{font-size:13px;color:var(--muted)}
+  footer{max-width:1100px;margin:28px auto 60px;padding:0 18px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#0b6"/><path d="M7 13l3 3 7-9" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h1>E-Learn — Python Advanced</h1>
+  </div>
+  <nav id="topNav">
+    <a href="python-index.html">Home</a>
+    <a href="python-beginner.html">Beginner</a>
+    <a href="python-intermediate.html">Intermediate</a>
+    <a href="login.html" class="auth-link">Login</a>
+    <a href="compiler/compiler.html" class="auth-link">PRACTICE</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="grid">
+    <!-- LEFT -->
+    <div>
+      <div class="card">
+        <h2>Advanced Python — Production Patterns & Best Practices</h2>
+        <p class="meta">Topics: decorators, generators, concurrency, testing, packaging, networking, security patterns.</p>
+
+        <h3 style="margin-top:12px">Video Library</h3>
+        <div class="video-grid">
+          <iframe src="https://www.youtube.com/embed/_uQrJ0TkZlc" title="Python Advanced"></iframe>
+          <iframe src="https://www.youtube.com/embed/Y8Tko2YC5hA" title="Advanced Python 2"></iframe>
+          <iframe src="https://www.youtube.com/embed/0Lt9w-BxKFQ" title="Advanced Python 3"></iframe>
+          <iframe src="https://www.youtube.com/embed/rfscVS0vtbw" title="Advanced Python 4"></iframe>
+          <iframe src="https://www.youtube.com/embed/HGOBQPFzWKo" title="Advanced Python 5"></iframe>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px" id="quizCard">
+        <h2>Advanced Quiz (25 Questions)</h2>
+        <p class="meta">This quiz measures advanced Python understanding. Passing score: 70%.</p>
+
+        <div id="quizArea" style="margin-top:12px"></div>
+
+        <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
+          <button class="btn" id="submitBtn">Submit Quiz</button>
+          <button class="btn secondary" id="resetBtn">Reset Answers</button>
+        </div>
+
+        <div class="progress"><i id="progressBar"></i></div>
+        <div class="small" style="margin-top:8px">Progress saved in your browser when signed in.</div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside>
+      <div class="card">
+        <h3>Your Status</h3>
+        <div style="display:flex;align-items:center;gap:12px">
+          <b id="statusPercent">0%</b>
+          <span class="meta">completed</span>
+        </div>
+        <div class="progress"><i id="sidebarPB"></i></div>
+
+        <hr style="margin:14px 0;border:none;border-top:1px solid #eee">
+
+        <h4>Level</h4>
+        <span class="pill">Advanced</span>
+
+        <h4 style="margin-top:14px">Prerequisite</h4>
+        <p class="small">You must pass the Python Intermediate quiz with at least 70% to access Advanced. If you already passed, the quiz is enabled.</p>
+
+        <div id="lockedBox" class="locked-overlay" style="margin-top:12px; display:none;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="4" fill="#fff3f3"/><path d="M7.5 10v-2a4.5 4.5 0 019 0v2" stroke="#d0455b" stroke-width="1.4" stroke-linecap="round"/><rect x="6" y="10" width="12" height="8" rx="2" stroke="#d0455b" stroke-width="1.4"/></svg>
+          <div>
+            <strong>🔒 Advanced Locked</strong>
+            <div class="small">Score ≥ 70% in Intermediate to unlock. Go to <a href="python-intermediate.html">Intermediate</a>.</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<footer>© 2025 E-Learn • Python Advanced</footer>
+
+<script>
+/* ----------------- Navbar login/logout behavior ----------------- */
+function renderNavUser(){
+  const topNav = document.getElementById('topNav');
+  const user = localStorage.getItem('loggedInUser');
+  const logoutArea = document.getElementById('logoutArea');
+  // If logged in show Welcome + Logout; else "Login" links show
+  if(user){
+    logoutArea.outerHTML = `<span style="color:#fff;margin-left:12px">Welcome, <b>${user}</b></span>
+      <a href="#" id="logoutBtn" style="margin-left:12px;color:#fff">Logout</a>`;
+    const lb = document.getElementById('logoutBtn');
+    lb.addEventListener('click', (e)=>{ e.preventDefault(); localStorage.removeItem('loggedInUser'); location.reload(); });
+  } else {
+    logoutArea.href = "login.html";
+    logoutArea.textContent = "Login";
+  }
+}
+renderNavUser();
+
+/* ----------------- Quiz data (25 questions) ----------------- */
+const quizData = [
+  {q:"Which of these is a Python decorator?", opts:["@staticmethod"," #decorator","$decorate","*static"], a:0},
+  {q:"What is the purpose of __init__ method?", opts:["Initialize objects","Destroy objects","Call functions","Private method"], a:0},
+  {q:"Which module is used for multi-threading?", opts:["threading","thread","process","concurrent"], a:0},
+  {q:"How to open a file in binary mode?", opts:["'rb'","'r'","'wb'","'b'"], a:0},
+  {q:"Which of these handles context management?", opts:["with","for","if","try"], a:0},
+  {q:"Which method is used for object string representation?", opts:["__str__","__repr__","__init__","__main__"], a:0},
+  {q:"How to create a generator function?", opts:["Using yield","Using return","Using def generator","Using class"], a:0},
+  {q:"Which method raises exceptions?", opts:["raise","throw","except","finally"], a:0},
+  {q:"What does 'zip()' function do?", opts:["Combine iterables","Split string","Sort list","Map values"], a:0},
+  {q:"Which module helps in unit testing?", opts:["unittest","pytest","test","check"], a:0},
+  {q:"How to define a class method?", opts:["@classmethod","def class","method","@method"], a:0},
+  {q:"Which data structure is immutable?", opts:["Tuple","List","Dictionary","Set"], a:0},
+  {q:"How to create a private variable?", opts:["__var","var","_var","$var"], a:0},
+  {q:"Which method is used to sort a list in-place?", opts:["sort()","sorted()","order()","arrange()"], a:0},
+  {q:"What is the purpose of super()?", opts:["Access parent class","Access child class","Call static method","Call private method"], a:0},
+  {q:"Which function returns an iterator from a sequence?", opts:["iter()","next()","sequence()","range()"], a:0},
+  {q:"Which method reads a file line by line?", opts:["readline()","read()","readlines()","open()"], a:0},
+  {q:"How to catch multiple exceptions?", opts:["except (TypeError, ValueError)","except all","except any","except multiple"], a:0},
+  {q:"Which of these is used to create a set?", opts:["set()","{}","[]","()"], a:0},
+  {q:"Which of these modules is for date and time?", opts:["datetime","time","calendar","date"], a:0},
+  {q:"What does 'del' do?", opts:["Deletes objects","Defines variables","Deletes classes","Deletes methods"], a:0},
+  {q:"Which of these converts object to JSON?", opts:["json.dumps()","json.load()","json.parse()","json.encode()"], a:0},
+  {q:"Which method returns object length?", opts:["len()","count()","size()","length()"], a:0},
+  {q:"Which of these is used for recursion?", opts:["Function calling itself","Loop","Class","Object"], a:0},
+  {q:"Which function evaluates string as Python expression?", opts:["eval()","exec()","parse()","input()"], a:0}
+];
+
+/* ----------------- Render quiz questions ----------------- */
+const quizArea = document.getElementById('quizArea');
+quizData.forEach((item, idx)=>{
+  const container = document.createElement('div');
+  container.className = 'question';
+  let html = `<p><strong>Q${idx+1}.</strong> ${item.q}</p>`;
+  item.opts.forEach((opt,oidx)=>{
+    html += `<label><input type="radio" name="q${idx}" value="${oidx}"> ${opt}</label>`;
+  });
+  container.innerHTML = html;
+  quizArea.appendChild(container);
+});
+
+/* ----------------- Access protection & progress load ----------------- */
+const user = localStorage.getItem('loggedInUser');
+const sidebarPB = document.getElementById('sidebarPB');
+const progressBar = document.getElementById('progressBar');
+const statusPercent = document.getElementById('statusPercent');
+const lockedBox = document.getElementById('lockedBox');
+const submitBtn = document.getElementById('submitBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+let savedProgress = 0;
+if(user){
+  const interKey = `${user}_python_intermediate_progress`;
+  const interVal = parseInt(localStorage.getItem(interKey) || "0", 10);
+  // If intermediate not passed -> lock
+  if(isNaN(interVal) || interVal < 70){
+    // show lock and disable quiz
+    lockedBox.style.display = 'flex';
+    // Disable inputs & submit
+    document.querySelectorAll('#quizArea input').forEach(i => i.disabled = true);
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = 0.6;
+    resetBtn.disabled = true;
+    resetBtn.style.opacity = 0.6;
+  } else {
+    // allowed: load any saved advanced progress
+    const advKey = `${user}_python_advanced_progress`;
+    savedProgress = parseInt(localStorage.getItem(advKey) || "0", 10) || 0;
+    progressBar.style.width = savedProgress + "%";
+    progressBar.textContent = savedProgress + "%";
+    sidebarPB.style.width = savedProgress + "%";
+    statusPercent.textContent = savedProgress + "%";
+  }
+} else {
+  // not logged in: show lock and message
+  lockedBox.style.display = 'flex';
+  document.querySelectorAll('#quizArea input').forEach(i => i.disabled = true);
+  submitBtn.disabled = true; submitBtn.style.opacity = 0.6;
+  resetBtn.disabled = true; resetBtn.style.opacity = 0.6;
+  statusPercent.textContent = "Sign in";
+}
+
+/* ----------------- Quiz submit & progress save ----------------- */
+function computeScore(){
+  let score = 0;
+  quizData.forEach((q,i)=>{
+    const sel = document.querySelector(`input[name=q${i}]:checked`);
+    if(sel && parseInt(sel.value,10) === q.a) score++;
+  });
+  return score;
+}
+
+submitBtn.addEventListener('click', ()=>{
+  const total = quizData.length;
+  const score = computeScore();
+  const percent = Math.round((score / total) * 100);
+  alert(`You scored ${score} / ${total} (${percent}%)`);
+  progressBar.style.width = percent + "%";
+  progressBar.textContent = percent + "%";
+  sidebarPB.style.width = percent + "%";
+  statusPercent.textContent = percent + "%";
+
+  if(user){
+    const advKey = `${user}_python_advanced_progress`;
+    localStorage.setItem(advKey, percent);
+    if(percent >= 70){
+      alert("🎉 Advanced Level Passed! Progress saved.");
+    } else {
+      alert("You need at least 70% to be considered passed.");
+    }
+  } else {
+    alert("Sign in to save progress (set localStorage 'loggedInUser').");
+  }
+});
+
+resetBtn.addEventListener('click', ()=>{
+  document.querySelectorAll('#quizArea input[type=radio]').forEach(i => i.checked = false);
+});
+
+/* ----------------- Prevent direct access to Advanced if not allowed via nav ----------------- */
+document.querySelectorAll('a[href="python-advanced.html"]').forEach(a=>{
+  a && a.addEventListener('click', (e)=>{
+    // only relevant if user tried to click link elsewhere to open this page — we already blocked inside this page
+    const u = localStorage.getItem('loggedInUser');
+    const inter = u ? parseInt(localStorage.getItem(`${u}_python_intermediate_progress`) || "0",10) : 0;
+    if(inter < 70){
+      e.preventDefault();
+      alert("You must pass the Intermediate quiz (≥70%) to access Advanced.");
+    }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>E-Learn Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --green:#28b485;
+    --green-dark:#1e8f66;
+    --accent:#1565c0;
+    --muted:#6b7280;
+    --bg:#f5f7fa;
+    --card:#ffffff;
+  }
+
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:#111;
+  }
+
+  /* Header */
+  header{
+    background:linear-gradient(90deg,var(--green),#2dbd98);
+    padding:16px 20px;
+    color:#fff;
+  }
+  .header-wrap{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .logo{
+    font-size:26px;
+    font-weight:700;
+  }
+  nav a, nav span{
+    color:#fff;
+    margin-left:15px;
+    cursor:pointer;
+    font-weight:600;
+    text-decoration:none;
+  }
+  nav a:hover, nav span:hover{
+    text-decoration:underline;
+  }
+
+  /* Main */
+  main{
+    max-width:1200px;
+    margin:40px auto;
+    padding:0 20px;
+  }
+
+  h2{
+    font-size:26px;
+    color:var(--accent);
+    text-align:center;
+    margin-bottom:8px;
+  }
+
+  p.center{
+    text-align:center;
+    color:var(--muted);
+    margin-bottom:30px;
+  }
+
+  /* Cards */
+  .card-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:24px;
+  }
+
+  .course-card{
+    background:var(--card);
+    padding:24px;
+    border-radius:14px;
+    text-align:center;
+    font-weight:600;
+    font-size:20px;
+    color:var(--accent);
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    text-decoration:none;
+    transition:all .25s ease;
+  }
+  .course-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 14px 30px rgba(0,0,0,0.15);
+  }
+
+  /* Certificates */
+  .cert-container{
+    margin-top:40px;
+  }
+
+  .cert-card{
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+    width:250px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    transition:.2s;
+  }
+  .cert-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 26px rgba(0,0,0,0.15);
+  }
+
+  .cert-button{
+    margin-top:12px;
+    padding:10px 16px;
+    border:none;
+    background:var(--green);
+    color:#fff;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  .cert-button:hover{
+    background:var(--green-dark);
+  }
+
+  .cert-grid{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+
+  footer{
+    text-align:center;
+    margin-top:60px;
+    padding:20px;
+    color:var(--muted);
+    font-size:14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-wrap">
+    <div class="logo">E-Learn</div>
+    <nav id="navbar">
+      <a href="index.html">Home</a>
+      <a href="login.html" class="auth-link">Login</a>
+      <a href="signup.html" class="auth-link">Signup</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <h2>Your Dashboard</h2>
+  <p class="center">Continue your learning journey or view certificates you’ve earned.</p>
+
+  <!-- Course Cards -->
+  <div class="card-grid">
+    <a href="WEB-DEV beginner.html" class="course-card">🌐 Web Development</a>
+    <a href="python-beginner.html" class="course-card">🐍 Python Programming</a>
+    <a href="AI-ML beginner.html" class="course-card">☁️ AI-ML</a>
+    <a href="DEVOPS beginner.html" class="course-card">⚙️ DevOps Engineering</a>
+  </div>
+
+  <!-- Certificates Section -->
+  <div class="cert-container">
+    <h2>Your Certificates</h2>
+    <div class="cert-grid" id="certificateList"></div>
+  </div>
+
+</main>
+
+<footer>© 2025 E-Learn • Learn Better. Learn Smarter.</footer>
+
+<!-- PDF libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+// Handle login in navbar
+document.addEventListener("DOMContentLoaded", () => {
+  const nav = document.getElementById("navbar");
+  const user = localStorage.getItem("loggedInUser");
+
+  if(user){
+    document.querySelectorAll(".auth-link").forEach(el => el.remove());
+    
+    const welcome = document.createElement("span");
+    welcome.innerHTML = `Welcome, <b>${user}</b>`;
+    welcome.onclick = () => (window.location.href = "dashboard.html");
+
+    const logout = document.createElement("a");
+    logout.innerHTML = "Logout";
+    logout.onclick = () => {
+      localStorage.removeItem("loggedInUser");
+      window.location.reload();
+    };
+
+    nav.appendChild(welcome);
+    nav.appendChild(logout);
+  }
+
+  // Load certificates
+  const certList = document.getElementById("certificateList");
+  const certs = JSON.parse(localStorage.getItem("earnedCerts") || "[]");
+
+  if(certs.length === 0){
+    certList.innerHTML = `<p style="color:var(--muted);font-size:15px;">No certificates earned yet. Complete courses to unlock certificates.</p>`;
+  } else {
+    certs.forEach(course => {
+      const box = document.createElement("div");
+      box.className = "cert-card";
+      box.innerHTML = `<h3>${course}</h3>`;
+
+      const btn = document.createElement("button");
+      btn.className = "cert-button";
+      btn.innerText = "Download Certificate";
+      btn.onclick = () => {
+        window.location.href = `certificate.html?course=${course}`;
+      };
+
+      box.appendChild(btn);
+      certList.appendChild(box);
+    });
+  }
+});
+</script>
+
+</body>
+</html>
